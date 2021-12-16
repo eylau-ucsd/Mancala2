@@ -2,6 +2,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <string.h>
+#include <limits.h>
 
 const int ENGINE_DEPTH = 10;
 const int BOARD_SIZE = 14;
