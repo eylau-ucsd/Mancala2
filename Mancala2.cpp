@@ -64,7 +64,6 @@ int Node::evaluate() {
             board[enemyPocket] += board[i];
             board[i] = 0;
         }
-        /*
         if (board[WHITE_POCKET] > board[BLACK_POCKET]) {
             return INT_MAX;
         }
@@ -74,9 +73,6 @@ int Node::evaluate() {
         else {
             return 0;
         }
-        */
-        return board[WHITE_POCKET] - board[BLACK_POCKET];
-
     }
     return board[WHITE_POCKET] - board[BLACK_POCKET];
 }
@@ -201,6 +197,10 @@ int Node::minimax(int depth, bool whiteTurn, int alpha, int beta) {
 
 std::vector<int> Node::getBestMove() {
     return bestMove->fromMove;
+}
+
+std::vector<int> Node::getNextPosition() {
+    return bestMove->board;
 }
 
 void Node::print() {

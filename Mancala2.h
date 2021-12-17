@@ -21,6 +21,7 @@ class Node {
         std::vector<Node*> generateChildren(); // creates the children nodes and adds it to the vector.
         std::vector<Node*> generateChildren(const std::vector<int>& b, const std::vector<int>& m); // for cases where more than one "move" per move
         std::vector<int> getBestMove();
+        std::vector<int> getNextPosition();
 
         static bool isTerminal(std::vector<int>& board, bool whiteTurn);
         void print(); // for debugging purposes

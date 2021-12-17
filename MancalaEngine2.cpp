@@ -22,6 +22,11 @@ int main(int argc, char *argv[]) {
             std::cout << i << " ";
         }
         std::cout << std::endl;
+        std::cout << "Position after move: ";
+        for (int i : initNode.getNextPosition()) {
+            std::cout << i << " ";
+        }
+        std::cout << std::endl;
     }
     std::cout << "Evaluation: " << eval << std::endl;
     return 0;
