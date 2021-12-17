@@ -27,6 +27,34 @@ Node::~Node() {
 }
 
 int Node::evaluate() {
+    if (terminal) {
+        int enemyStartIndex;
+        int enemyEndIndex;
+        int enemyPocket;
+        if (whiteTurn) {
+            enemyStartIndex = WHITE_POCKET + 1;
+            enemyEndIndex = BLACK_POCKET;
+            enemyPocket = BLACK_POCKET;
+        }
+        else {
+            enemyStartIndex = 0;
+            enemyEndIndex = WHITE_POCKET;
+            enemyPocket = WHITE_POCKET;
+        }
+        for (int i = enemyStartIndex; i < enemyEndIndex; i++) {
+            board[enemyPocket] += board[i];
+            board[i] = 0;
+        }
+        if (board[WHITE_POCKET] > board[BLACK_POCKET]) {
+            return INT_MAX;
+        }
+        else if (board[BLACK_POCKET] > board[WHITE_POCKET]) {
+            return INT_MIN;
+        }
+        else {
+            return 0;
+        }
+    }
     return board[WHITE_POCKET] - board[BLACK_POCKET];
 }
 
@@ -39,17 +67,23 @@ std::vector<Node*> Node::generateChildren(const std::vector<int>& b, const std::
     int enemyPocket;
     int startIndex;
     int endIndex;
+    int enemyStartIndex;
+    int enemyEndIndex;
     if (whiteTurn) {
         ownPocket = WHITE_POCKET;
         enemyPocket = BLACK_POCKET;
         startIndex = 0;
         endIndex = WHITE_POCKET;
+        enemyStartIndex = WHITE_POCKET + 1;
+        enemyEndIndex = BLACK_POCKET;
     }
     else {
         ownPocket = BLACK_POCKET;
         enemyPocket = WHITE_POCKET;
         startIndex = WHITE_POCKET + 1;
         endIndex = BLACK_POCKET;
+        enemyStartIndex = 0;
+        enemyEndIndex = WHITE_POCKET;
     }
     std::vector<Node*> result;
     for (int i = startIndex; i < endIndex; i++) {
@@ -85,7 +119,7 @@ std::vector<Node*> Node::generateChildren(const std::vector<int>& b, const std::
                     prioritize = true;
                 }
                 bool newTerminal = true;
-                for (int y = startIndex; y < endIndex; y++) {
+                for (int y = enemyStartIndex; y < enemyEndIndex; y++) {
                     if (newBoard[y] > 0) {
                         newTerminal = false;
                         break;
