@@ -64,6 +64,7 @@ int Node::evaluate() {
             board[enemyPocket] += board[i];
             board[i] = 0;
         }
+        /*
         if (board[WHITE_POCKET] > board[BLACK_POCKET]) {
             return INT_MAX;
         }
@@ -73,6 +74,9 @@ int Node::evaluate() {
         else {
             return 0;
         }
+        */
+        return board[WHITE_POCKET] - board[BLACK_POCKET];
+
     }
     return board[WHITE_POCKET] - board[BLACK_POCKET];
 }
@@ -128,7 +132,9 @@ std::vector<Node*> Node::generateChildren(const std::vector<int>& b, const std::
                 if (newBoard[x] == 1 && startIndex <= x && x < endIndex) {
                     int opposite = (BOARD_SIZE - 2) - x;
                     newBoard[ownPocket] += newBoard[opposite];
+                    newBoard[ownPocket] += 1;
                     newBoard[opposite] = 0;
+                    newBoard[x] = 0;
                     prioritize = true;
                 }
                 Node* newNode = new Node(newBoard, !whiteTurn);
