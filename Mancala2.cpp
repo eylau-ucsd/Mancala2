@@ -11,10 +11,29 @@ Node::Node() {
     terminal = false;
 }
 
-Node::Node(std::vector<int>& board, bool whiteTurn, bool terminal) {
+bool Node::isTerminal(std::vector<int>& board, bool whiteTurn) {
+    int startIndex;
+    int endIndex;
+    if (whiteTurn) {
+        startIndex = 0;
+        endIndex = WHITE_POCKET;
+    }
+    else {
+        startIndex = WHITE_POCKET + 1;
+        endIndex = BLACK_POCKET;
+    }
+    for (int i = startIndex; i < endIndex; i++) {
+        if (board[i] > 0) {
+            return false;
+        }
+    }
+    return true;
+}
+
+Node::Node(std::vector<int>& board, bool whiteTurn) {
     this->board = board;
     this->whiteTurn = whiteTurn;
-    this->terminal = terminal;
+    this->terminal = isTerminal(board, whiteTurn);
     children = std::vector<Node*>();
     fromMove = std::vector<int>();
     bestMove = nullptr;
@@ -67,23 +86,17 @@ std::vector<Node*> Node::generateChildren(const std::vector<int>& b, const std::
     int enemyPocket;
     int startIndex;
     int endIndex;
-    int enemyStartIndex;
-    int enemyEndIndex;
     if (whiteTurn) {
         ownPocket = WHITE_POCKET;
         enemyPocket = BLACK_POCKET;
         startIndex = 0;
         endIndex = WHITE_POCKET;
-        enemyStartIndex = WHITE_POCKET + 1;
-        enemyEndIndex = BLACK_POCKET;
     }
     else {
         ownPocket = BLACK_POCKET;
         enemyPocket = WHITE_POCKET;
         startIndex = WHITE_POCKET + 1;
         endIndex = BLACK_POCKET;
-        enemyStartIndex = 0;
-        enemyEndIndex = WHITE_POCKET;
     }
     std::vector<Node*> result;
     for (int i = startIndex; i < endIndex; i++) {
@@ -118,14 +131,7 @@ std::vector<Node*> Node::generateChildren(const std::vector<int>& b, const std::
                     newBoard[opposite] = 0;
                     prioritize = true;
                 }
-                bool newTerminal = true;
-                for (int y = enemyStartIndex; y < enemyEndIndex; y++) {
-                    if (newBoard[y] > 0) {
-                        newTerminal = false;
-                        break;
-                    }
-                }
-                Node* newNode = new Node(newBoard, !whiteTurn, newTerminal);
+                Node* newNode = new Node(newBoard, !whiteTurn);
                 newNode->fromMove = newMove;
                 if (prioritize) {
                     result.insert(result.begin(), newNode);
@@ -150,6 +156,9 @@ int Node::minimax(int depth, bool whiteTurn, int alpha, int beta) {
     if (whiteTurn) {
         int maxEva = INT_MIN;
         children = generateChildren();
+        if (!children.empty()) {
+            bestMove = children[0];
+        }
         for (Node* child : children) {
             int eva = child->minimax(depth-1, false, alpha, beta);
             if (maxEva < eva) {
@@ -166,6 +175,9 @@ int Node::minimax(int depth, bool whiteTurn, int alpha, int beta) {
     else {
         int minEva = INT_MAX;
         children = generateChildren();
+        if (!children.empty()) {
+            bestMove = children[0];
+        }
         for (Node* child : children) {
             int eva = child->minimax(depth-1, true, alpha, beta);
             if (minEva > eva) {

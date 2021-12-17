@@ -13,7 +13,7 @@ const int BLACK_POCKET = 13;
 class Node {
     public:
         Node();
-        Node(std::vector<int>& board, bool whiteTurn, bool terminal);
+        Node(std::vector<int>& board, bool whiteTurn);
         ~Node();
         int minimax(int depth); // well you know what this is,
         // but it also sets bestMove to the optimal child node.
@@ -22,6 +22,7 @@ class Node {
         std::vector<Node*> generateChildren(const std::vector<int>& b, const std::vector<int>& m); // for cases where more than one "move" per move
         std::vector<int> getBestMove();
 
+        static bool isTerminal(std::vector<int>& board, bool whiteTurn);
         void print(); // for debugging purposes
     private:
         std::vector<int> board;
